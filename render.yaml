@@ -2,8 +2,9 @@ services:
   - type: web
     name: vieurl-backend
     runtime: python
-    buildCommand: cd backend && ./build.sh
-    startCommand: cd backend && gunicorn backend.wsgi:application
+    rootDir: backend
+    buildCommand: ./build.sh
+    startCommand: gunicorn backend.wsgi:application
     envVars:
       - key: PRODUCTION
         value: "true"
@@ -11,3 +12,7 @@ services:
         value: 3.10.0
       - key: PYTHONPATH
         value: /opt/render/project/src/backend
+      - key: DJANGO_SETTINGS_MODULE
+        value: backend.settings_prod
+      - key: DJANGO_SECRET_KEY
+        value: mg$5+yau32rdq=6wwznu##-hb(4tu6kn*546ozi@4k1mk7*$i5
