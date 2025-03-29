@@ -13,6 +13,6 @@ services:
       - key: PYTHONPATH
         value: /opt/render/project/src
       - key: DJANGO_SETTINGS_MODULE
-        value: backend.settings_prod
+        value: backend.backend.settings_prod
       - key: DJANGO_SECRET_KEY
         sync: false
