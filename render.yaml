@@ -11,8 +11,8 @@ services:
       - key: PYTHON_VERSION
         value: 3.10.0
       - key: PYTHONPATH
-        value: /opt/render/project/src
+        value: /opt/render/project/src/backend
       - key: DJANGO_SETTINGS_MODULE
-        value: backend.settings_prod
+        value: backend.backend.settings_prod
       - key: DJANGO_SECRET_KEY
         sync: false
