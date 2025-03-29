@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: vieurl-backend
+    runtime: python
+    buildCommand: cd backend && ./build.sh
+    startCommand: cd backend && gunicorn backend.wsgi:application
+    envVars:
+      - key: PRODUCTION
+        value: "true"
+      - key: PYTHON_VERSION
+        value: 3.10.0
+      - key: PYTHONPATH
+        value: /opt/render/project/src/backend
