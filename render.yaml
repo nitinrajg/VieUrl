@@ -15,4 +15,4 @@ services:
       - key: DJANGO_SETTINGS_MODULE
         value: backend.settings_prod
       - key: DJANGO_SECRET_KEY
-        value: mg$5+yau32rdq=6wwznu##-hb(4tu6kn*546ozi@4k1mk7*$i5
+        sync: false
