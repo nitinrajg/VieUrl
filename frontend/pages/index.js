@@ -53,7 +53,7 @@ export default function Home() {
     setVideoDetails(null);
 
     try {
-      const response = await fetch('http://localhost:8000/api/extract-info/', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/extract-info/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ export default function Home() {
   const handleDownload = async (quality) => {
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/api/download/', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/download/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
