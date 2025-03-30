@@ -4,15 +4,15 @@ services:
     runtime: python
     rootDir: backend
     buildCommand: ./build.sh
-    startCommand: gunicorn backend.wsgi:application
+    startCommand: gunicorn backend.backend.wsgi:application
     envVars:
       - key: PRODUCTION
         value: "true"
       - key: PYTHON_VERSION
         value: 3.10.0
       - key: PYTHONPATH
-        value: /opt/render/project/src
+        value: /opt/render/project/src/backend
       - key: DJANGO_SETTINGS_MODULE
-        value: backend.backend.settings_prod
+        value: backend.settings_prod
       - key: DJANGO_SECRET_KEY
         sync: false
