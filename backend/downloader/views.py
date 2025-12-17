@@ -70,7 +70,7 @@ class ExtractVideoInfoView(APIView):
             ydl_opts = {
                 'quiet': True,
                 'no_warnings': True,
-                'format': 'best[ext=mp4]/best',  # Prefer mp4, but accept any format
+                'format': 'bestvideo+bestaudio/best',  # Most flexible format selection
                 'merge_output_format': 'mp4',
                 # Anti-bot detection options
                 'extractor_args': {'youtube': {'player_client': ['android', 'web']}},
