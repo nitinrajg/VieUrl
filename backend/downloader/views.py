@@ -70,16 +70,8 @@ class ExtractVideoInfoView(APIView):
             ydl_opts = {
                 'quiet': True,
                 'no_warnings': True,
-                'format': 'bestvideo+bestaudio/best',  # Most flexible format selection
-                'merge_output_format': 'mp4',
-                # Anti-bot detection options
-                'extractor_args': {'youtube': {'player_client': ['android', 'web']}},
-                'http_headers': {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                    'Accept-Language': 'en-us,en;q=0.5',
-                    'Sec-Fetch-Mode': 'navigate',
-                },
+                'ignoreerrors': False,
+                # Don't specify format - let yt-dlp extract all available formats
             }
             
             # Add cookie file if available
@@ -260,10 +252,7 @@ class DownloadVideoView(APIView):
             
             # Try multiple format options in order of preference
             format_options = [
-                f'bestvideo[height<={quality[:-1]}][ext=mp4]+bestaudio[ext=m4a]/best[height<={quality[:-1]}][ext=mp4]',
-                f'best[height<={quality[:-1]}][ext=mp4]',
                 f'best[height<={quality[:-1]}]',
-                'best[ext=mp4]',
                 'best'
             ]
             
@@ -274,17 +263,8 @@ class DownloadVideoView(APIView):
                 try:
                     ydl_opts = {
                         'format': format_str,
-                        'merge_output_format': 'mp4',
                         'quiet': True,
                         'no_warnings': True,
-                        # Anti-bot detection options
-                        'extractor_args': {'youtube': {'player_client': ['android', 'web']}},
-                        'http_headers': {
-                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                            'Accept-Language': 'en-us,en;q=0.5',
-                            'Sec-Fetch-Mode': 'navigate',
-                        },
                     }
                     
                     # Add cookie file if available
