@@ -132,7 +132,7 @@ export default function Home() {
             <br />
             Video by Link!
           </h1>
-          
+
           <div className="flex flex-wrap justify-center gap-6 mb-12">
             <div className="flex items-center">
               <svg className="w-5 h-5 text-green-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
@@ -232,7 +232,7 @@ export default function Home() {
                   </div>
                   <div className="md:w-3/5">
                     <h2 className="text-xl font-semibold mb-2 line-clamp-2">{videoDetails.title}</h2>
-                    
+
                     <div className="space-y-2 mb-4">
                       {videoDetails.author && (
                         <p className="text-gray-300 flex items-center">
@@ -242,7 +242,7 @@ export default function Home() {
                           {videoDetails.author}
                         </p>
                       )}
-                      
+
                       {videoDetails.duration && (
                         <p className="text-gray-300 flex items-center">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
@@ -252,7 +252,7 @@ export default function Home() {
                         </p>
                       )}
                     </div>
-                    
+
                     <div className="space-y-3">
                       <h3 className="font-medium text-gray-300">Download Options:</h3>
                       <div className="flex flex-wrap gap-2">
@@ -284,16 +284,18 @@ export default function Home() {
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-green-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p className="mb-4 font-medium text-xl">Your video is ready for download!</p>
+                <p className="mb-2 font-medium text-xl">Your video is ready!</p>
+                <p className="mb-4 text-sm text-green-300">Tip: Right-click the button and select "Save link as..." to download</p>
                 <a
                   href={downloadLink}
-                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center font-medium py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
                   </svg>
-                  Download Now
+                  Open Video / Download
                 </a>
               </div>
             </div>
