@@ -25,16 +25,27 @@ def get_youtube_cookie_path():
     encoded_cookies = os.environ.get('YOUTUBE_COOKIES_B64')
     
     if not encoded_cookies:
+        print("COOKIE DEBUG: YOUTUBE_COOKIES_B64 environment variable is NOT set or empty")
         return None
+    
+    print(f"COOKIE DEBUG: Found YOUTUBE_COOKIES_B64, length: {len(encoded_cookies)} chars")
     
     try:
         # Create a temp file that persists until manually deleted
         with tempfile.NamedTemporaryFile(mode='wb', delete=False, suffix='.txt') as f:
             # Decode base64 string back to bytes and write to file
-            f.write(base64.b64decode(encoded_cookies))
+            decoded_bytes = base64.b64decode(encoded_cookies)
+            f.write(decoded_bytes)
+            print(f"COOKIE DEBUG: Created cookie file at {f.name}, size: {len(decoded_bytes)} bytes")
+            # Print first 100 chars of decoded content for debugging
+            try:
+                decoded_str = decoded_bytes.decode('utf-8', errors='ignore')[:200]
+                print(f"COOKIE DEBUG: Cookie file starts with: {decoded_str[:100]}...")
+            except:
+                pass
             return f.name
     except Exception as e:
-        print(f"Error processing YouTube cookies: {e}")
+        print(f"COOKIE DEBUG ERROR: Failed to process cookies: {e}")
         return None
 
 
@@ -77,6 +88,9 @@ class ExtractVideoInfoView(APIView):
             # Add cookie file if available
             if cookie_path:
                 ydl_opts['cookiefile'] = cookie_path
+                print(f"COOKIE DEBUG: Using cookie file: {cookie_path}")
+            else:
+                print("COOKIE DEBUG: No cookie file available, proceeding without cookies")
             
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=False)
