@@ -2,6 +2,7 @@ import os
 import re
 import uuid
 import tempfile
+import base64
 from django.conf import settings
 from django.http import FileResponse
 from django.urls import reverse
@@ -14,6 +15,36 @@ import json
 from bs4 import BeautifulSoup
 from .models import VideoDownload
 import yt_dlp
+
+
+def get_youtube_cookie_path():
+    """
+    Decode Base64 encoded YouTube cookies from environment variable
+    and write to a temporary file. Returns the path to the temp file.
+    """
+    encoded_cookies = os.environ.get('YOUTUBE_COOKIES_B64')
+    
+    if not encoded_cookies:
+        return None
+    
+    try:
+        # Create a temp file that persists until manually deleted
+        with tempfile.NamedTemporaryFile(mode='wb', delete=False, suffix='.txt') as f:
+            # Decode base64 string back to bytes and write to file
+            f.write(base64.b64decode(encoded_cookies))
+            return f.name
+    except Exception as e:
+        print(f"Error processing YouTube cookies: {e}")
+        return None
+
+
+def cleanup_cookie_file(cookie_path):
+    """Remove the temporary cookie file"""
+    if cookie_path and os.path.exists(cookie_path):
+        try:
+            os.remove(cookie_path)
+        except Exception as e:
+            print(f"Error cleaning up cookie file: {e}")
 
 class ExtractVideoInfoView(APIView):
     def post(self, request):
@@ -31,7 +62,11 @@ class ExtractVideoInfoView(APIView):
             return Response({'error': 'Failed to process video'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def extract_youtube_info(self, url):
+        cookie_path = None
         try:
+            # Get cookie file path from Base64 encoded env var
+            cookie_path = get_youtube_cookie_path()
+            
             ydl_opts = {
                 'quiet': True,
                 'no_warnings': True,
@@ -46,6 +81,10 @@ class ExtractVideoInfoView(APIView):
                     'Sec-Fetch-Mode': 'navigate',
                 },
             }
+            
+            # Add cookie file if available
+            if cookie_path:
+                ydl_opts['cookiefile'] = cookie_path
             
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=False)
@@ -127,6 +166,9 @@ class ExtractVideoInfoView(APIView):
                 return Response(video_info)
         except Exception as e:
             raise Exception(f"Error extracting YouTube video info: {str(e)}")
+        finally:
+            # Always cleanup the cookie file
+            cleanup_cookie_file(cookie_path)
     
     def extract_instagram_info(self, url):
         try:
@@ -211,7 +253,11 @@ class DownloadVideoView(APIView):
             return Response({'error': f'Failed to get Instagram video URL: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
     def download_youtube_video(self, url, quality):
+        cookie_path = None
         try:
+            # Get cookie file path from Base64 encoded env var
+            cookie_path = get_youtube_cookie_path()
+            
             # Try multiple format options in order of preference
             format_options = [
                 f'bestvideo[height<={quality[:-1]}][ext=mp4]+bestaudio[ext=m4a]/best[height<={quality[:-1]}][ext=mp4]',
@@ -240,6 +286,10 @@ class DownloadVideoView(APIView):
                             'Sec-Fetch-Mode': 'navigate',
                         },
                     }
+                    
+                    # Add cookie file if available
+                    if cookie_path:
+                        ydl_opts['cookiefile'] = cookie_path
                     
                     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                         info = ydl.extract_info(url, download=False)
@@ -317,3 +367,7 @@ class DownloadVideoView(APIView):
         except Exception as e:
             print(f"YouTube Download Error: {str(e)}")
             return Response({'error': 'Failed to get YouTube video URL'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        finally:
+            # Always cleanup the cookie file
+            cleanup_cookie_file(cookie_path)
+
